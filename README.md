@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="Assets/OpenClickerLogo.svg" alt="Open Autoclicker logo" width="128" />
+  <img src="Assets/readme/logo-rounded.png" alt="Open Autoclicker logo" width="128" />
 </p>
 
 <h1 align="center">Open Autoclicker</h1>
