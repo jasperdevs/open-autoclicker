@@ -48,7 +48,7 @@ jobs:
           brew install create-dmg
 
       - name: Install npm dependencies
-        run: npm ci
+        run: npm install
 
       - name: Import Windows signing certificate
         if: matrix.platform == 'windows-latest' && secrets.WINDOWS_CERTIFICATE != '' && secrets.WINDOWS_CERTIFICATE_PASSWORD != ''
