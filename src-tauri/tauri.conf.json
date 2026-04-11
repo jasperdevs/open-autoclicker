@@ -13,13 +13,15 @@
     "windows": [
       {
         "title": "Open Autoclicker",
-        "width": 420,
-        "height": 640,
-        "minWidth": 380,
-        "minHeight": 550,
-        "resizable": true,
+        "label": "main",
+        "width": 460,
+        "height": 580,
+        "minWidth": 440,
+        "minHeight": 560,
+        "resizable": false,
         "fullscreen": false,
-        "decorations": true
+        "decorations": false,
+        "visible": false
       }
     ],
     "security": {

@@ -1,5 +1,6 @@
 import { invoke } from "@tauri-apps/api/core";
 import { listen } from "@tauri-apps/api/event";
+import { getCurrentWindow } from "@tauri-apps/api/window";
 
 interface ClickerConfig {
   interval_ms: number;
@@ -13,58 +14,82 @@ interface ClickerConfig {
 }
 
 let isRunning = false;
-let clickCount = 0;
+let currentHotkey = "F6";
 
-// DOM elements
-const startBtn = document.getElementById("start-btn") as HTMLButtonElement;
-const stopBtn = document.getElementById("stop-btn") as HTMLButtonElement;
-const statusDot = document.getElementById("status-dot")!;
-const statusText = document.getElementById("status-text")!;
-const clickCountEl = document.getElementById("click-count")!;
-const hotkeyDisplay = document.getElementById("hotkey-display")!;
-const changeHotkeyBtn = document.getElementById("change-hotkey")!;
-const pickPositionBtn = document.getElementById("pick-position")!;
+const $ = (id: string) => document.getElementById(id)!;
 
-// Interval inputs
-const hoursInput = document.getElementById("hours") as HTMLInputElement;
-const minutesInput = document.getElementById("minutes") as HTMLInputElement;
-const secondsInput = document.getElementById("seconds") as HTMLInputElement;
-const msInput = document.getElementById("milliseconds") as HTMLInputElement;
+// Elements
+const startBtn = $("start-btn") as HTMLButtonElement;
+const stopBtn = $("stop-btn") as HTMLButtonElement;
+const statusDot = $("status-dot");
+const statusText = $("status-text");
+const clickCountEl = $("click-count");
+const hotkeyDisplay = $("hotkey-display");
+const settingsHotkeyDisplay = $("settings-hotkey-display");
+const countRow = $("count-row");
+const positionRow = $("position-row");
 
-// Repeat inputs
-const repeatCountInput = document.getElementById("repeat-count") as HTMLInputElement;
+const hoursInput = $("hours") as HTMLInputElement;
+const minutesInput = $("minutes") as HTMLInputElement;
+const secondsInput = $("seconds") as HTMLInputElement;
+const msInput = $("milliseconds") as HTMLInputElement;
+const mouseButtonSelect = $("mouse-button") as HTMLSelectElement;
+const clickTypeSelect = $("click-type") as HTMLSelectElement;
+const repeatModeSelect = $("repeat-mode") as HTMLSelectElement;
+const repeatCountInput = $("repeat-count") as HTMLInputElement;
+const positionModeSelect = $("position-mode") as HTMLSelectElement;
+const posXInput = $("pos-x") as HTMLInputElement;
+const posYInput = $("pos-y") as HTMLInputElement;
 
-// Position inputs
-const posXInput = document.getElementById("pos-x") as HTMLInputElement;
-const posYInput = document.getElementById("pos-y") as HTMLInputElement;
+// ── Init ──
+invoke("show_window");
 
+// ── Window controls ──
+$("btn-minimize").addEventListener("click", () => getCurrentWindow().minimize());
+$("btn-close").addEventListener("click", () => getCurrentWindow().close());
+
+// ── Navigation ──
+document.querySelectorAll(".nav-item").forEach((btn) => {
+  btn.addEventListener("click", () => {
+    document.querySelectorAll(".nav-item").forEach((b) => b.classList.remove("active"));
+    document.querySelectorAll(".page").forEach((p) => p.classList.remove("active"));
+    btn.classList.add("active");
+    const page = (btn as HTMLElement).dataset.page!;
+    $(`page-${page}`).classList.add("active");
+  });
+});
+
+// ── Conditional rows ──
+repeatModeSelect.addEventListener("change", () => {
+  countRow.hidden = repeatModeSelect.value !== "count";
+});
+positionModeSelect.addEventListener("change", () => {
+  positionRow.hidden = positionModeSelect.value !== "fixed";
+});
+
+// ── Config ──
 function getIntervalMs(): number {
-  const h = parseInt(hoursInput.value) || 0;
-  const m = parseInt(minutesInput.value) || 0;
-  const s = parseInt(secondsInput.value) || 0;
-  const ms = parseInt(msInput.value) || 0;
-  return h * 3600000 + m * 60000 + s * 1000 + ms;
+  return (parseInt(hoursInput.value) || 0) * 3600000
+       + (parseInt(minutesInput.value) || 0) * 60000
+       + (parseInt(secondsInput.value) || 0) * 1000
+       + (parseInt(msInput.value) || 0);
 }
 
 function getConfig(): ClickerConfig {
-  const mouseBtn = document.querySelector('.toggle-btn.active[data-group="mouse"]') as HTMLElement;
-  const clickType = document.querySelector('.toggle-btn.active[data-group="clicktype"]') as HTMLElement;
-  const repeatMode = (document.querySelector('input[name="repeat"]:checked') as HTMLInputElement).value;
-  const positionMode = (document.querySelector('input[name="position"]:checked') as HTMLInputElement).value;
-
   return {
     interval_ms: Math.max(1, getIntervalMs()),
-    mouse_button: mouseBtn?.dataset.value || "left",
-    click_type: clickType?.dataset.value || "single",
-    repeat_mode: repeatMode,
-    repeat_count: parseInt(repeatCountInput.value) || 10,
-    position_mode: positionMode,
+    mouse_button: mouseButtonSelect.value,
+    click_type: clickTypeSelect.value,
+    repeat_mode: repeatModeSelect.value,
+    repeat_count: parseInt(repeatCountInput.value) || 1,
+    position_mode: positionModeSelect.value,
     fixed_x: parseInt(posXInput.value) || 0,
     fixed_y: parseInt(posYInput.value) || 0,
   };
 }
 
-function updateUI(running: boolean) {
+// ── State ──
+function setRunning(running: boolean) {
   isRunning = running;
   startBtn.disabled = running;
   stopBtn.disabled = !running;
@@ -72,115 +97,71 @@ function updateUI(running: boolean) {
   statusText.textContent = running ? "Running" : "Stopped";
 }
 
-function updateClickCount(count: number) {
-  clickCount = count;
-  clickCountEl.textContent = `${count.toLocaleString()} click${count !== 1 ? "s" : ""}`;
+function setClickCount(n: number) {
+  clickCountEl.textContent = `${n.toLocaleString()} click${n !== 1 ? "s" : ""}`;
 }
 
-async function startClicking() {
+async function start() {
   if (isRunning) return;
-  const config = getConfig();
-  if (config.interval_ms < 1) return;
-
-  clickCount = 0;
-  updateClickCount(0);
-  updateUI(true);
-
-  try {
-    await invoke("start_clicking", { config });
-  } catch (e) {
-    console.error("Failed to start:", e);
-    updateUI(false);
-  }
+  setClickCount(0);
+  setRunning(true);
+  try { await invoke("start_clicking", { config: getConfig() }); }
+  catch { setRunning(false); }
 }
 
-async function stopClicking() {
+async function stop() {
   if (!isRunning) return;
-  try {
-    await invoke("stop_clicking");
-  } catch (e) {
-    console.error("Failed to stop:", e);
-  }
-  updateUI(false);
+  try { await invoke("stop_clicking"); } catch {}
+  setRunning(false);
 }
 
-// Toggle button groups
-document.querySelectorAll(".toggle-btn").forEach((btn) => {
-  btn.addEventListener("click", () => {
-    const group = (btn as HTMLElement).dataset.group;
-    document.querySelectorAll(`.toggle-btn[data-group="${group}"]`).forEach((b) => b.classList.remove("active"));
-    btn.classList.add("active");
-  });
-});
+startBtn.addEventListener("click", start);
+stopBtn.addEventListener("click", stop);
 
-// Start/Stop
-startBtn.addEventListener("click", startClicking);
-stopBtn.addEventListener("click", stopClicking);
+// ── Events from Rust ──
+listen<number>("click-count", (e) => setClickCount(e.payload));
+listen("clicker-stopped", () => setRunning(false));
+listen("toggle-clicker", () => isRunning ? stop() : start());
 
-// Listen for click count updates from Rust
-listen<number>("click-count", (event) => {
-  updateClickCount(event.payload);
-});
-
-// Listen for autoclicker stopped (from repeat count or hotkey)
-listen("clicker-stopped", () => {
-  updateUI(false);
-});
-
-// Listen for hotkey toggle from Rust
-listen("toggle-clicker", () => {
-  if (isRunning) {
-    stopClicking();
-  } else {
-    startClicking();
-  }
-});
-
-// Pick position button
-pickPositionBtn.addEventListener("click", async () => {
+// ── Pick position ──
+$("pick-position").addEventListener("click", async () => {
   try {
     const pos = await invoke<{ x: number; y: number }>("get_cursor_position");
     posXInput.value = String(pos.x);
     posYInput.value = String(pos.y);
-    // Auto-select "fixed position" radio
-    const fixedRadio = document.querySelector('input[name="position"][value="fixed"]') as HTMLInputElement;
-    fixedRadio.checked = true;
-  } catch (e) {
-    console.error("Failed to get cursor position:", e);
-  }
+  } catch {}
 });
 
-// Change hotkey
-let listeningForHotkey = false;
-changeHotkeyBtn.addEventListener("click", () => {
-  if (listeningForHotkey) return;
-  listeningForHotkey = true;
-  hotkeyDisplay.textContent = "Press a key...";
-  changeHotkeyBtn.textContent = "Listening...";
+// ── Set hotkey (settings page) ──
+$("set-hotkey-btn").addEventListener("click", () => {
+  settingsHotkeyDisplay.textContent = "...";
 
   const handler = async (e: KeyboardEvent) => {
     e.preventDefault();
-    const key = e.key === " " ? "Space" : e.key;
-    hotkeyDisplay.textContent = key;
-    listeningForHotkey = false;
-    changeHotkeyBtn.textContent = "Change";
     document.removeEventListener("keydown", handler);
 
+    if (e.key === "Escape") {
+      settingsHotkeyDisplay.textContent = currentHotkey;
+      return;
+    }
+
+    const key = e.key === " " ? "Space" : e.key;
     try {
       await invoke("set_hotkey", { key });
-    } catch (err) {
-      console.error("Failed to set hotkey:", err);
+      currentHotkey = key;
+      hotkeyDisplay.textContent = key;
+      settingsHotkeyDisplay.textContent = key;
+    } catch {
+      settingsHotkeyDisplay.textContent = currentHotkey;
     }
   };
 
   document.addEventListener("keydown", handler);
 });
 
-// Prevent form submission on Enter in number inputs
-document.querySelectorAll('input[type="number"]').forEach((input) => {
-  input.addEventListener("keydown", (e) => {
-    if ((e as KeyboardEvent).key === "Enter") {
-      (e as KeyboardEvent).preventDefault();
-    }
+// ── Prevent Enter on number inputs ──
+document.querySelectorAll('input[type="number"]').forEach((el) => {
+  el.addEventListener("keydown", (e) => {
+    if ((e as KeyboardEvent).key === "Enter") (e as KeyboardEvent).preventDefault();
   });
 });
