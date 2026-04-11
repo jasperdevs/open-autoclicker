@@ -49,6 +49,18 @@ jobs:
       - name: Install npm dependencies
         run: npm ci
 
+      - name: Import Windows signing certificate
+        if: matrix.platform == 'windows-latest' && secrets.WINDOWS_CERTIFICATE != '' && secrets.WINDOWS_CERTIFICATE_PASSWORD != ''
+        shell: pwsh
+        run: |
+          $certPath = Join-Path $env:RUNNER_TEMP "windows-signing.pfx"
+          [IO.File]::WriteAllBytes($certPath, [Convert]::FromBase64String("${{ secrets.WINDOWS_CERTIFICATE }}"))
+          $securePassword = ConvertTo-SecureString "${{ secrets.WINDOWS_CERTIFICATE_PASSWORD }}" -AsPlainText -Force
+          $certificate = Import-PfxCertificate -FilePath $certPath -Password $securePassword -CertStoreLocation Cert:\CurrentUser\My
+          "WINDOWS_CERTIFICATE_THUMBPRINT=$($certificate.Thumbprint)" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
+          "WINDOWS_SIGN_DIGEST_ALGORITHM=sha256" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
+          "WINDOWS_SIGN_TIMESTAMP_URL=${{ vars.WINDOWS_TIMESTAMP_URL }}" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
+
       - name: Build Tauri app
         uses: tauri-apps/tauri-action@v0
         env:
@@ -62,6 +74,9 @@ jobs:
           APPLE_ID: ${{ secrets.APPLE_ID }}
           APPLE_PASSWORD: ${{ secrets.APPLE_PASSWORD }}
           APPLE_TEAM_ID: ${{ vars.APPLE_TEAM_ID }}
+          WINDOWS_CERTIFICATE_THUMBPRINT: ${{ env.WINDOWS_CERTIFICATE_THUMBPRINT }}
+          WINDOWS_SIGN_DIGEST_ALGORITHM: ${{ env.WINDOWS_SIGN_DIGEST_ALGORITHM }}
+          WINDOWS_SIGN_TIMESTAMP_URL: ${{ env.WINDOWS_SIGN_TIMESTAMP_URL }}
         with:
           tagName: ${{ github.ref_name }}
           releaseName: 'Open Autoclicker ${{ github.ref_name }}'

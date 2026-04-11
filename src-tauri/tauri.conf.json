@@ -1,7 +1,7 @@
 {
   "$schema": "../node_modules/@tauri-apps/cli/config.schema.json",
   "productName": "Open Autoclicker",
-  "version": "0.2.2",
+  "version": "0.2.3",
   "identifier": "com.jasperdevs.open-autoclicker",
   "build": {
     "frontendDist": "../dist",
@@ -48,6 +48,17 @@
       "icons/icon.ico"
     ],
     "windows": {
+      "signCommand": {
+        "cmd": "powershell",
+        "args": [
+          "-NoProfile",
+          "-ExecutionPolicy",
+          "Bypass",
+          "-File",
+          "scripts/sign-windows.ps1",
+          "%1"
+        ]
+      },
       "nsis": {
         "installMode": "both",
         "displayLanguageSelector": false
