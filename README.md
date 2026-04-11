@@ -123,7 +123,7 @@ macOS requires Accessibility / Input Monitoring permission before any app can co
 
 ### Release setup
 
-- Set the `TAURI_UPDATER_PUBLIC_KEY` repository variable so release builds can verify signed updates.
+- Signed updater releases are currently disabled. If you want in-app auto-updates later, add `TAURI_UPDATER_PUBLIC_KEY`, `TAURI_SIGNING_PRIVATE_KEY`, and `TAURI_SIGNING_PRIVATE_KEY_PASSWORD`, then re-enable updater artifact generation.
 - Add Apple signing + notarization secrets/variables (`APPLE_CERTIFICATE`, `APPLE_CERTIFICATE_PASSWORD`, `APPLE_SIGNING_IDENTITY`, `APPLE_ID`, `APPLE_PASSWORD`, `APPLE_TEAM_ID`) if you want the macOS release to ship without Gatekeeper warnings.
 - Add Windows Authenticode signing secrets (`WINDOWS_CERTIFICATE`, `WINDOWS_CERTIFICATE_PASSWORD`) and optionally `WINDOWS_TIMESTAMP_URL` so release builds can sign `.msi` / `.exe` installers and reduce SmartScreen warnings.
 - The repository now runs CI on pull requests and `main` to catch frontend or Rust regressions before tagging a release.
