@@ -217,6 +217,11 @@ pub async fn play_macro(
             let mut enigo = match Enigo::new(&Settings::default()) {
                 Ok(e) => e,
                 Err(_) => {
+                    let _ = app_handle.emit(
+                        "macro-playback-error",
+                        "Unable to initialize input playback. Check system input permissions."
+                            .to_string(),
+                    );
                     playing.store(false, Ordering::SeqCst);
                     let _ = app_handle.emit("macro-stopped", ());
                     return;

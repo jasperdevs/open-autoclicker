@@ -39,3 +39,6 @@ jobs:
 
       - name: Verify frontend and backend
         run: npm run check
+
+      - name: Run Rust tests
+        run: cargo test --manifest-path src-tauri/Cargo.toml
