@@ -117,6 +117,17 @@ Same idea, modern stack. Built with Tauri instead of .NET so it's smaller, runs 
 
 Fully open source, no telemetry, no network calls besides update checks. Builds come straight from GitHub Actions.
 
+#### Why can macOS block clicking or macro recording?
+
+macOS requires Accessibility / Input Monitoring permission before any app can control the mouse or listen for global input. If recording or clicking is blocked, grant access in System Settings and relaunch the app.
+
+### Release setup
+
+- Set the `TAURI_UPDATER_PUBLIC_KEY` repository variable so release builds can verify signed updates.
+- Add Apple signing + notarization secrets/variables (`APPLE_CERTIFICATE`, `APPLE_CERTIFICATE_PASSWORD`, `APPLE_SIGNING_IDENTITY`, `APPLE_ID`, `APPLE_PASSWORD`, `APPLE_TEAM_ID`) if you want the macOS release to ship without Gatekeeper warnings.
+- Add Windows Authenticode signing separately if you want to reduce SmartScreen warnings for downloaded `.msi` / `.exe` installers.
+- The repository now runs CI on pull requests and `main` to catch frontend or Rust regressions before tagging a release.
+
 ---
 
 <p align="center">

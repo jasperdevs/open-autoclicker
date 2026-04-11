@@ -13,11 +13,8 @@ pub struct MacroAction {
     pub action_type: String,
     pub detail: String,
     pub delay_ms: u64,
-    #[serde(skip)]
     pub x: Option<i32>,
-    #[serde(skip)]
     pub y: Option<i32>,
-    #[serde(skip)]
     pub button: Option<String>,
 }
 
@@ -26,6 +23,7 @@ pub struct MacroState {
     pub playing: Arc<AtomicBool>,
     pub actions: Arc<Mutex<Vec<MacroAction>>>,
     listener_running: Arc<AtomicBool>,
+    last_recorded_at: Arc<Mutex<Option<Instant>>>,
 }
 
 impl MacroState {
@@ -35,6 +33,7 @@ impl MacroState {
             playing: Arc::new(AtomicBool::new(false)),
             actions: Arc::new(Mutex::new(Vec::new())),
             listener_running: Arc::new(AtomicBool::new(false)),
+            last_recorded_at: Arc::new(Mutex::new(None)),
         }
     }
 }
@@ -63,25 +62,28 @@ pub async fn start_macro_recording(app: AppHandle) -> Result<(), String> {
 
     set_actions(&state.actions, Vec::new());
     state.recording.store(true, Ordering::SeqCst);
+    match state.last_recorded_at.lock() {
+        Ok(mut guard) => *guard = Some(Instant::now()),
+        Err(poisoned) => *poisoned.into_inner() = Some(Instant::now()),
+    }
 
     let recording = state.recording.clone();
     let actions = state.actions.clone();
     let listener_running = state.listener_running.clone();
+    let last_recorded_at = state.last_recorded_at.clone();
 
     // Only spawn listener thread if not already running
     if !listener_running.swap(true, Ordering::SeqCst) {
         let recording_clone = recording.clone();
         let actions_clone = actions.clone();
         let listener_flag = listener_running.clone();
+        let last_recorded_at_clone = last_recorded_at.clone();
+        let error_app = app.clone();
 
         std::thread::spawn(move || {
-            let start_time = Arc::new(Mutex::new(Instant::now()));
-            let last_time = Arc::new(Mutex::new(Instant::now()));
-
             let rec = recording_clone.clone();
             let acts = actions_clone.clone();
-            let _st = start_time.clone();
-            let lt = last_time.clone();
+            let lt = last_recorded_at_clone.clone();
 
             let callback = move |event: Event| {
                 if !rec.load(Ordering::SeqCst) {
@@ -90,8 +92,23 @@ pub async fn start_macro_recording(app: AppHandle) -> Result<(), String> {
 
                 let now = Instant::now();
                 let delay = {
-                    let last = lt.lock().unwrap();
-                    now.duration_since(*last).as_millis() as u64
+                    match lt.lock() {
+                        Ok(mut last) => {
+                            let delay = last
+                                .map(|previous| now.duration_since(previous).as_millis() as u64)
+                                .unwrap_or(0);
+                            *last = Some(now);
+                            delay
+                        }
+                        Err(poisoned) => {
+                            let mut last = poisoned.into_inner();
+                            let delay = last
+                                .map(|previous| now.duration_since(previous).as_millis() as u64)
+                                .unwrap_or(0);
+                            *last = Some(now);
+                            delay
+                        }
+                    }
                 };
 
                 let action = match event.event_type {
@@ -129,17 +146,22 @@ pub async fn start_macro_recording(app: AppHandle) -> Result<(), String> {
                 };
 
                 if let Some(action) = action {
-                    *lt.lock().unwrap() = now;
                     match acts.lock() {
-                        Ok(mut guard) => { guard.push(action); },
-                        Err(poisoned) => { poisoned.into_inner().push(action); },
+                        Ok(mut guard) => {
+                            guard.push(action);
+                        }
+                        Err(poisoned) => {
+                            poisoned.into_inner().push(action);
+                        }
                     }
                 }
             };
 
             // rdev::listen blocks, so this thread stays alive
-            if let Err(_) = listen(callback) {
-                // Listener ended
+            if let Err(error) = listen(callback) {
+                recording_clone.store(false, Ordering::SeqCst);
+                let _ = error_app.emit("macro-recording-error", format!("{error:?}"));
+                let _ = error_app.emit("macro-stopped", ());
             }
             listener_flag.store(false, Ordering::SeqCst);
         });
@@ -152,6 +174,10 @@ pub async fn start_macro_recording(app: AppHandle) -> Result<(), String> {
 pub async fn stop_macro_recording(app: AppHandle) -> Result<Vec<MacroAction>, String> {
     let state = app.state::<Arc<MacroState>>();
     state.recording.store(false, Ordering::SeqCst);
+    match state.last_recorded_at.lock() {
+        Ok(mut guard) => *guard = None,
+        Err(poisoned) => *poisoned.into_inner() = None,
+    }
 
     let actions = get_actions(&state.actions);
     Ok(actions)
@@ -198,7 +224,11 @@ pub async fn play_macro(
             };
 
             let is_infinite = repeat_mode == "infinite";
-            let max_repeats = if repeat_mode == "count" { repeat_count } else { 1 };
+            let max_repeats = if repeat_mode == "count" {
+                repeat_count
+            } else {
+                1
+            };
             let mut iteration: u64 = 0;
 
             loop {
@@ -231,11 +261,22 @@ pub async fn play_macro(
                                 Some("middle") => Button::Middle,
                                 _ => Button::Left,
                             };
-                            let _ = enigo.button(button, enigo::Direction::Click);
+                            if let Err(error) = enigo.button(button, enigo::Direction::Click) {
+                                let _ = app_handle.emit("macro-playback-error", error.to_string());
+                                playing.store(false, Ordering::SeqCst);
+                                break;
+                            }
                         }
                         "Move" => {
                             if let (Some(x), Some(y)) = (action.x, action.y) {
-                                let _ = enigo.move_mouse(x, y, Coordinate::Abs);
+                                if let Err(error) = enigo.move_mouse(x, y, Coordinate::Abs) {
+                                    let _ = app_handle.emit(
+                                        "macro-playback-error",
+                                        error.to_string(),
+                                    );
+                                    playing.store(false, Ordering::SeqCst);
+                                    break;
+                                }
                             }
                         }
                         _ => {}
@@ -262,18 +303,34 @@ pub async fn stop_macro(app: AppHandle) -> Result<(), String> {
 
 #[tauri::command]
 pub async fn set_macro_hotkey(app: AppHandle, key: String) -> Result<(), String> {
-    use tauri_plugin_global_shortcut::{GlobalShortcutExt, Shortcut};
+    crate::update_shortcut_binding(&app, crate::ShortcutBindingKind::MacroPlayback, Some(key))
+}
 
-    let shortcut: Shortcut = key.parse().map_err(|e| format!("{e:?}"))?;
+#[cfg(test)]
+mod tests {
+    use super::MacroAction;
 
-    let handle = app.clone();
-    app.global_shortcut()
-        .on_shortcut(shortcut, move |_app, _shortcut, event| {
-            if event.state == tauri_plugin_global_shortcut::ShortcutState::Pressed {
-                let _ = handle.emit("toggle-macro", ());
-            }
-        })
-        .map_err(|e| e.to_string())?;
+    #[test]
+    fn macro_actions_keep_playback_metadata_when_serialized() {
+        let action = MacroAction {
+            action_type: "Move".to_string(),
+            detail: "120, 340".to_string(),
+            delay_ms: 42,
+            x: Some(120),
+            y: Some(340),
+            button: Some("left".to_string()),
+        };
 
-    Ok(())
+        let value = serde_json::to_value(&action).expect("macro action should serialize");
+        assert_eq!(value["type"], "Move");
+        assert_eq!(value["x"], 120);
+        assert_eq!(value["y"], 340);
+        assert_eq!(value["button"], "left");
+
+        let decoded: MacroAction =
+            serde_json::from_value(value).expect("macro action should deserialize");
+        assert_eq!(decoded.x, Some(120));
+        assert_eq!(decoded.y, Some(340));
+        assert_eq!(decoded.button.as_deref(), Some("left"));
+    }
 }

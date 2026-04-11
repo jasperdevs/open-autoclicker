@@ -1,12 +1,13 @@
 {
   "name": "open-autoclicker",
-  "version": "0.1.0",
+  "version": "0.2.2",
   "description": "A modern, cross-platform autoclicker built with Tauri",
   "private": true,
   "type": "module",
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
+    "check": "npm run build && cargo check --manifest-path src-tauri/Cargo.toml",
     "tauri": "tauri"
   },
   "repository": {
@@ -23,7 +24,6 @@
   },
   "dependencies": {
     "@tauri-apps/api": "^2.10.1",
-    "@tauri-apps/plugin-autostart": "^2.5.1",
     "@tauri-apps/plugin-notification": "^2",
     "@tauri-apps/plugin-process": "^2.3.1",
     "@tauri-apps/plugin-updater": "^2.10.1"

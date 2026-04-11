@@ -57,7 +57,15 @@ pub async fn start_clicking(app: AppHandle, config: ClickerConfig) -> Result<(),
             .unwrap();
 
         rt.block_on(async {
-            let mut enigo = Enigo::new(&Settings::default()).unwrap();
+            let mut enigo = match Enigo::new(&Settings::default()) {
+                Ok(enigo) => enigo,
+                Err(error) => {
+                    running.store(false, Ordering::SeqCst);
+                    let _ = app_handle.emit("clicker-error", error.to_string());
+                    let _ = app_handle.emit("clicker-stopped", ());
+                    return;
+                }
+            };
             let button = get_button(&config.mouse_button);
             let is_double = config.click_type == "double";
             let is_infinite = config.repeat_mode == "infinite";
@@ -73,12 +81,24 @@ pub async fn start_clicking(app: AppHandle, config: ClickerConfig) -> Result<(),
                 }
 
                 if use_fixed {
-                    let _ = enigo.move_mouse(config.fixed_x, config.fixed_y, Coordinate::Abs);
+                    if let Err(error) =
+                        enigo.move_mouse(config.fixed_x, config.fixed_y, Coordinate::Abs)
+                    {
+                        let _ = app_handle.emit("clicker-error", error.to_string());
+                        break;
+                    }
                 }
 
-                let _ = enigo.button(button, enigo::Direction::Click);
+                if let Err(error) = enigo.button(button, enigo::Direction::Click) {
+                    let _ = app_handle.emit("clicker-error", error.to_string());
+                    break;
+                }
+
                 if is_double {
-                    let _ = enigo.button(button, enigo::Direction::Click);
+                    if let Err(error) = enigo.button(button, enigo::Direction::Click) {
+                        let _ = app_handle.emit("clicker-error", error.to_string());
+                        break;
+                    }
                 }
 
                 count += 1;
@@ -121,41 +141,10 @@ pub struct CursorPos {
 
 #[tauri::command]
 pub async fn set_hotkey(app: AppHandle, key: String) -> Result<(), String> {
-    use tauri_plugin_global_shortcut::{GlobalShortcutExt, Shortcut};
-
-    let global_shortcut = app.global_shortcut();
-
-    global_shortcut.unregister_all().map_err(|e| e.to_string())?;
-
-    let shortcut: Shortcut = key.parse().map_err(|e| format!("{e:?}"))?;
-
-    let handle = app.clone();
-    global_shortcut
-        .on_shortcut(shortcut, move |_app, _shortcut, event| {
-            if event.state == tauri_plugin_global_shortcut::ShortcutState::Pressed {
-                let _ = handle.emit("toggle-clicker", ());
-            }
-        })
-        .map_err(|e| e.to_string())?;
-
-    Ok(())
+    crate::update_shortcut_binding(&app, crate::ShortcutBindingKind::Toggle, Some(key))
 }
 
 #[tauri::command]
 pub async fn set_emergency_hotkey(app: AppHandle, key: String) -> Result<(), String> {
-    use tauri_plugin_global_shortcut::{GlobalShortcutExt, Shortcut};
-
-    let shortcut: Shortcut = key.parse().map_err(|e| format!("{e:?}"))?;
-
-    let handle = app.clone();
-    app.global_shortcut()
-        .on_shortcut(shortcut, move |_app, _shortcut, event| {
-            if event.state == tauri_plugin_global_shortcut::ShortcutState::Pressed {
-                let _ = handle.emit("emergency-stop", ());
-                handle.exit(0);
-            }
-        })
-        .map_err(|e| e.to_string())?;
-
-    Ok(())
+    crate::update_shortcut_binding(&app, crate::ShortcutBindingKind::EmergencyStop, Some(key))
 }

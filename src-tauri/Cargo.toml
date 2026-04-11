@@ -1,6 +1,6 @@
 [package]
 name = "open-autoclicker"
-version = "0.1.0"
+version = "0.2.2"
 description = "A modern cross-platform autoclicker"
 authors = ["jasperdevs"]
 license = "MIT"
@@ -27,5 +27,4 @@ tauri-plugin-updater = "2"
 tauri-plugin-notification = "2"
 enigo = { version = "0.3", features = ["serde"] }
 tokio = { version = "1", features = ["time", "sync"] }
-tauri-plugin-autostart = "2.5.1"
 rdev = "0.5"
