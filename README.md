@@ -22,7 +22,7 @@
   </a>
 </p>
 
-[![Open Autoclicker screenshot](Assets/readme/screenshot.png)](https://github.com/jasperdevs/open-autoclicker/releases/latest)
+
 
 ---
 
