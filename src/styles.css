@@ -879,24 +879,3 @@ kbd {
   outline: 2px solid var(--text);
   outline-offset: 1px;
 }
-
-/* ── macOS Glass ── */
-@supports (-webkit-backdrop-filter: blur(20px)) {
-  .macos .titlebar,
-  .macos .nav {
-    -webkit-backdrop-filter: blur(20px);
-    backdrop-filter: blur(20px);
-  }
-
-  .macos .card {
-    background: rgba(255,255,255,0.05);
-    -webkit-backdrop-filter: blur(20px);
-    backdrop-filter: blur(20px);
-  }
-
-  @media (prefers-color-scheme: light) {
-    .macos .card {
-      background: rgba(255,255,255,0.6);
-    }
-  }
-}

@@ -2,14 +2,11 @@
   <img src="Assets/readme/logo-rounded.png" alt="Open Autoclicker logo" width="128" />
 </p>
 <p align="center"><strong>Open Autoclicker</strong></p>
-<p align="center">A clean, open-source autoclicker for Windows and macOS.</p>
+<p align="center">A clean, open-source autoclicker for Windows.</p>
 
 <p align="center">
   <a href="https://github.com/jasperdevs/open-autoclicker/releases/latest">
     <img src="https://img.shields.io/badge/Windows-download-4c71f2?style=flat&logo=windows&logoColor=white" alt="Download for Windows" />
-  </a>
-  <a href="https://github.com/jasperdevs/open-autoclicker/releases/latest">
-    <img src="https://img.shields.io/badge/macOS-download-4c71f2?style=flat&logo=apple&logoColor=white" alt="Download for macOS" />
   </a>
 </p>
 
@@ -36,8 +33,6 @@ Download directly from the [releases page](https://github.com/jasperdevs/open-au
 | Platform              | Download                                       |
 | --------------------- | ---------------------------------------------- |
 | Windows               | `.exe` setup installer                         |
-| macOS (Apple Silicon)  | `.dmg`                                         |
-| macOS (Intel)          | `.dmg`                                         |
 
 ### Features
 
@@ -90,7 +85,7 @@ Runs quietly in the background with full tray menu controls. Double-click the tr
 <tr>
 <td width="40%" valign="middle">
 <h3>Dark and light mode</h3>
-Follows your system theme automatically with a native look on both Windows and macOS.
+Follows your system theme automatically with a native Windows look.
 </td>
 <td width="60%">
 <img src="Assets/readme/dark-light-mode.png" alt="Dark and light mode support" width="100%" />
@@ -111,20 +106,15 @@ Checks for new versions directly from GitHub Releases so you're always on the la
 
 #### How is this different from OP Auto Clicker?
 
-Same idea, modern stack. Built with Tauri instead of .NET so it's smaller, runs on macOS too, and has built-in auto-updates. Fully open source under MIT.
+Same idea, modern stack. Built with Tauri instead of .NET so it's smaller and has built-in auto-updates. Fully open source under MIT.
 
 #### Is it safe?
 
 Fully open source, no telemetry, no network calls besides update checks. Builds come straight from GitHub Actions.
 
-#### Why can macOS block clicking or macro recording?
-
-macOS requires Accessibility / Input Monitoring permission before any app can control the mouse or listen for global input. If recording or clicking is blocked, grant access in System Settings and relaunch the app.
-
 ### Release setup
 
 - Signed updater releases are currently disabled. If you want in-app auto-updates later, add `TAURI_UPDATER_PUBLIC_KEY`, `TAURI_SIGNING_PRIVATE_KEY`, and `TAURI_SIGNING_PRIVATE_KEY_PASSWORD`, then re-enable updater artifact generation.
-- Add Apple signing + notarization secrets/variables (`APPLE_CERTIFICATE`, `APPLE_CERTIFICATE_PASSWORD`, `APPLE_SIGNING_IDENTITY`, `APPLE_ID`, `APPLE_PASSWORD`, `APPLE_TEAM_ID`) if you want the macOS release to ship without Gatekeeper warnings.
 - Add Windows Authenticode signing secrets (`WINDOWS_CERTIFICATE`, `WINDOWS_CERTIFICATE_PASSWORD`) and optionally `WINDOWS_TIMESTAMP_URL` so release builds can sign `.msi` / `.exe` installers and reduce SmartScreen warnings.
 - The repository now runs CI on pull requests and `main` to catch frontend or Rust regressions before tagging a release.
 

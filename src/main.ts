@@ -67,10 +67,6 @@ let startAttemptId = 0;
 
 const $ = (id: string) => document.getElementById(id)!;
 
-if (navigator.userAgent.includes("Mac")) {
-  document.documentElement.classList.add("macos");
-}
-
 const startBtn = $("start-btn") as HTMLButtonElement;
 const stopBtn = $("stop-btn") as HTMLButtonElement;
 const statusDot = $("status-dot");
@@ -827,17 +823,11 @@ listen("macro-stopped", () => {
 });
 listen<string>("macro-recording-error", async (event) => {
   setMacroState("idle");
-  const macHelp = navigator.userAgent.includes("Mac")
-    ? "Allow Accessibility / Input Monitoring for Open Autoclicker, then try again."
-    : normalizeError(event.payload);
-  await showToast("Macro recording blocked", macHelp);
+  await showToast("Macro recording blocked", normalizeError(event.payload));
 });
 listen<string>("macro-playback-error", async (event) => {
   setMacroState("idle");
-  const macHelp = navigator.userAgent.includes("Mac")
-    ? "Allow Accessibility / Input Monitoring for Open Autoclicker before playing macros."
-    : normalizeError(event.payload);
-  await showToast("Macro playback blocked", macHelp);
+  await showToast("Macro playback blocked", normalizeError(event.payload));
 });
 
 document.querySelectorAll('input[type="number"]').forEach((input) => {

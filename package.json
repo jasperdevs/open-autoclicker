@@ -1,7 +1,7 @@
 {
   "name": "open-autoclicker",
-  "version": "0.2.8",
-  "description": "A modern, cross-platform autoclicker built with Tauri",
+  "version": "0.2.9",
+  "description": "A modern Windows autoclicker built with Tauri",
   "private": true,
   "type": "module",
   "scripts": {
