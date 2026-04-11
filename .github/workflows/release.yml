@@ -74,12 +74,6 @@ jobs:
         uses: tauri-apps/tauri-action@v0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          APPLE_CERTIFICATE: ${{ secrets.APPLE_CERTIFICATE }}
-          APPLE_CERTIFICATE_PASSWORD: ${{ secrets.APPLE_CERTIFICATE_PASSWORD }}
-          APPLE_SIGNING_IDENTITY: ${{ vars.APPLE_SIGNING_IDENTITY }}
-          APPLE_ID: ${{ secrets.APPLE_ID }}
-          APPLE_PASSWORD: ${{ secrets.APPLE_PASSWORD }}
-          APPLE_TEAM_ID: ${{ vars.APPLE_TEAM_ID }}
           WINDOWS_CERTIFICATE_THUMBPRINT: ${{ env.WINDOWS_CERTIFICATE_THUMBPRINT }}
           WINDOWS_SIGN_DIGEST_ALGORITHM: ${{ env.WINDOWS_SIGN_DIGEST_ALGORITHM }}
           WINDOWS_SIGN_TIMESTAMP_URL: ${{ env.WINDOWS_SIGN_TIMESTAMP_URL }}
