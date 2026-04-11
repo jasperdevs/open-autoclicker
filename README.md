@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="assets/OpenClickerLogo.svg" alt="Open Autoclicker logo" width="128" />
+</p>
+
 <h1 align="center">Open Autoclicker</h1>
 <p align="center">A clean, open-source autoclicker for Windows and macOS with configurable intervals, hotkeys, and system tray support.</p>
 
@@ -34,35 +38,71 @@ Grab the latest release from the [**Releases page**](https://github.com/jasperde
 
 ## Features
 
-- **Configurable click interval** — hours, minutes, seconds, and milliseconds
-- **Mouse button** — left, middle, or right click
-- **Click type** — single or double click
-- **Repeat mode** — click until stopped or a fixed number of times
-- **Cursor position** — click at current position or a fixed coordinate
-- **Global hotkey** — start and stop with a customizable hotkey (default: F6)
-- **System tray** — runs in the background with tray menu controls
-- **Dark and light mode** — follows your system theme
-- **Auto-updates** — checks for new versions from GitHub Releases
-- **Cross-platform** — native builds for Windows and macOS
-
-## Built with
-
-- [Tauri v2](https://tauri.app) — small, fast, native app shell
-- [Rust](https://www.rust-lang.org) — backend logic and mouse simulation
-- [TypeScript](https://www.typescriptlang.org) — frontend UI
-
-## Development
-
-```bash
-# install dependencies
-npm install
-
-# run in development
-npm run tauri dev
-
-# build for production
-npm run tauri build
-```
+<table>
+<tr>
+<td width="40%" valign="middle">
+<h3>Click interval</h3>
+Set precise intervals down to the millisecond with separate fields for hours, minutes, seconds, and ms.
+</td>
+<td width="60%">
+<img src="assets/readme/click-interval.png" alt="Click interval configuration" width="100%" />
+</td>
+</tr>
+<tr>
+<td width="40%" valign="middle">
+<h3>Mouse options</h3>
+Choose left, middle, or right button with single or double click mode. Set a fixed repeat count or click until stopped.
+</td>
+<td width="60%">
+<img src="assets/readme/mouse-options.png" alt="Mouse button and click type options" width="100%" />
+</td>
+</tr>
+<tr>
+<td width="40%" valign="middle">
+<h3>Cursor position</h3>
+Click at the current cursor position or lock to fixed X/Y coordinates with a built-in screen picker.
+</td>
+<td width="60%">
+<img src="assets/readme/cursor-position.png" alt="Cursor position configuration" width="100%" />
+</td>
+</tr>
+<tr>
+<td width="40%" valign="middle">
+<h3>Global hotkey</h3>
+Start and stop clicking with a customizable global hotkey that works even when the app is in the background. Default: F6.
+</td>
+<td width="60%">
+<img src="assets/readme/global-hotkey.png" alt="Global hotkey configuration" width="100%" />
+</td>
+</tr>
+<tr>
+<td width="40%" valign="middle">
+<h3>System tray</h3>
+Runs quietly in the background with full tray menu controls. Double-click the tray icon to restore the window.
+</td>
+<td width="60%">
+<img src="assets/readme/system-tray.png" alt="System tray integration" width="100%" />
+</td>
+</tr>
+<tr>
+<td width="40%" valign="middle">
+<h3>Dark and light mode</h3>
+Follows your system theme automatically with a native look on both Windows and macOS.
+</td>
+<td width="60%">
+<img src="assets/readme/dark-light-mode.png" alt="Dark and light mode support" width="100%" />
+</td>
+</tr>
+<tr>
+<td width="40%" valign="middle">
+<h3>Auto-updates</h3>
+Checks for new versions directly from GitHub Releases so you're always on the latest build.
+</td>
+<td width="60%">
+<img src="assets/readme/auto-updates.png" alt="Auto-update from GitHub Releases" width="100%" />
+</td>
+</tr>
+</table>
 
 ## License
 
