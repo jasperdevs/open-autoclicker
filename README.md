@@ -3,11 +3,26 @@
 </p>
 <p align="center"><strong>Open Autoclicker</strong></p>
 <p align="center">A clean, open-source autoclicker for Windows and macOS.</p>
+
 <p align="center">
-  <a href="https://github.com/jasperdevs/open-autoclicker/releases/latest"><img alt="GitHub release" src="https://img.shields.io/github/v/release/jasperdevs/open-autoclicker?style=flat-square" /></a>
-  <a href="https://github.com/jasperdevs/open-autoclicker/releases"><img alt="Downloads" src="https://img.shields.io/github/downloads/jasperdevs/open-autoclicker/total?style=flat-square&label=downloads" /></a>
-  <a href="https://github.com/jasperdevs/open-autoclicker/actions/workflows/release.yml"><img alt="Build status" src="https://img.shields.io/github/actions/workflow/status/jasperdevs/open-autoclicker/release.yml?style=flat-square" /></a>
-  <a href="https://github.com/jasperdevs/open-autoclicker/stargazers"><img alt="Stars" src="https://img.shields.io/github/stars/jasperdevs/open-autoclicker?style=flat-square" /></a>
+  <a href="https://github.com/jasperdevs/open-autoclicker/releases/latest">
+    <img src="https://img.shields.io/badge/Windows-download-4c71f2?style=flat&logo=windows&logoColor=white" alt="Download for Windows" />
+  </a>
+  <a href="https://github.com/jasperdevs/open-autoclicker/releases/latest">
+    <img src="https://img.shields.io/badge/macOS-download-4c71f2?style=flat&logo=apple&logoColor=white" alt="Download for macOS" />
+  </a>
+</p>
+
+<p align="center">
+  <a href="https://github.com/jasperdevs/open-autoclicker/releases">
+    <img src="https://img.shields.io/github/downloads/jasperdevs/open-autoclicker/total?style=flat&logo=github&label=downloads&color=555" alt="GitHub downloads" />
+  </a>
+  <a href="https://github.com/jasperdevs/open-autoclicker/releases/latest">
+    <img src="https://img.shields.io/github/downloads/jasperdevs/open-autoclicker/latest/total?style=flat&logo=github&label=downloads@latest&color=555" alt="GitHub latest release downloads" />
+  </a>
+  <a href="https://github.com/jasperdevs/open-autoclicker/stargazers">
+    <img src="https://img.shields.io/github/stars/jasperdevs/open-autoclicker?style=flat&logo=github&label=stars&color=4c71f2" alt="GitHub stars" />
+  </a>
 </p>
 
 [![Open Autoclicker screenshot](Assets/readme/screenshot.png)](https://github.com/jasperdevs/open-autoclicker/releases/latest)
@@ -96,17 +111,11 @@ Checks for new versions directly from GitHub Releases so you're always on the la
 
 #### How is this different from OP Auto Clicker?
 
-Open Autoclicker is a modern rewrite inspired by OP Auto Clicker with some key differences:
-
-- Built with Tauri v2 instead of .NET — smaller install size, lower memory usage
-- Native macOS support out of the box
-- Dark and light mode that follows your system theme
-- Auto-updates built in
-- Open source under MIT
+Same idea, modern stack. Built with Tauri instead of .NET so it's smaller, runs on macOS too, and has built-in auto-updates. Fully open source under MIT.
 
 #### Is it safe?
 
-Yes. Open Autoclicker is fully open source — you can audit every line of code. Builds are produced by GitHub Actions directly from this repository. No telemetry, no network calls besides update checks.
+Fully open source, no telemetry, no network calls besides update checks. Builds come straight from GitHub Actions.
 
 ---
 
@@ -115,3 +124,11 @@ Yes. Open Autoclicker is fully open source — you can audit every line of code.
 </p>
 
 <p align="center">Open Autoclicker is open source under <a href="LICENSE">MIT</a>.</p>
+
+<a href="https://star-history.com/#jasperdevs/open-autoclicker&Date">
+ <picture>
+   <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=jasperdevs/open-autoclicker&type=Date&theme=dark" />
+   <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/svg?repos=jasperdevs/open-autoclicker&type=Date" />
+   <img alt="Star History Chart" src="https://api.star-history.com/svg?repos=jasperdevs/open-autoclicker&type=Date" width="600" />
+ </picture>
+</a>
