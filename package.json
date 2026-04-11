@@ -1,0 +1,27 @@
+{
+  "name": "open-autoclicker",
+  "version": "0.1.0",
+  "description": "A modern, cross-platform autoclicker built with Tauri",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "tauri": "tauri"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jasperdevs/open-autoclicker.git"
+  },
+  "author": "jasperdevs",
+  "license": "MIT",
+  "devDependencies": {
+    "@tauri-apps/cli": "^2.10.1",
+    "esbuild": "^0.28.0",
+    "typescript": "^6.0.2",
+    "vite": "^8.0.8"
+  },
+  "dependencies": {
+    "@tauri-apps/api": "^2.10.1"
+  }
+}

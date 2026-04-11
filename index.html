@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Open Autoclicker</title>
+    <link rel="stylesheet" href="/src/styles.css" />
+  </head>
+  <body>
+    <div id="app">
+      <header class="titlebar" data-tauri-drag-region>
+        <div class="titlebar-title" data-tauri-drag-region>Open Autoclicker</div>
+      </header>
+
+      <main class="container">
+        <!-- Click Interval -->
+        <section class="card">
+          <h2 class="card-title">Click Interval</h2>
+          <div class="interval-row">
+            <div class="interval-field">
+              <input type="number" id="hours" min="0" max="99" value="0" />
+              <label for="hours">Hours</label>
+            </div>
+            <div class="interval-field">
+              <input type="number" id="minutes" min="0" max="59" value="0" />
+              <label for="minutes">Min</label>
+            </div>
+            <div class="interval-field">
+              <input type="number" id="seconds" min="0" max="59" value="0" />
+              <label for="seconds">Sec</label>
+            </div>
+            <div class="interval-field">
+              <input type="number" id="milliseconds" min="0" max="999" value="100" />
+              <label for="milliseconds">Ms</label>
+            </div>
+          </div>
+        </section>
+
+        <!-- Click Options -->
+        <section class="card">
+          <h2 class="card-title">Click Options</h2>
+          <div class="options-grid">
+            <div class="option-group">
+              <label class="option-label">Mouse Button</label>
+              <div class="button-group">
+                <button class="toggle-btn active" data-group="mouse" data-value="left">Left</button>
+                <button class="toggle-btn" data-group="mouse" data-value="middle">Middle</button>
+                <button class="toggle-btn" data-group="mouse" data-value="right">Right</button>
+              </div>
+            </div>
+            <div class="option-group">
+              <label class="option-label">Click Type</label>
+              <div class="button-group">
+                <button class="toggle-btn active" data-group="clicktype" data-value="single">Single</button>
+                <button class="toggle-btn" data-group="clicktype" data-value="double">Double</button>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Repeat -->
+        <section class="card">
+          <h2 class="card-title">Repeat</h2>
+          <div class="repeat-options">
+            <label class="radio-option">
+              <input type="radio" name="repeat" value="infinite" checked />
+              <span class="radio-custom"></span>
+              <span>Repeat until stopped</span>
+            </label>
+            <label class="radio-option">
+              <input type="radio" name="repeat" value="count" />
+              <span class="radio-custom"></span>
+              <span>Repeat</span>
+              <input type="number" id="repeat-count" min="1" value="10" class="inline-input" />
+              <span>times</span>
+            </label>
+          </div>
+        </section>
+
+        <!-- Cursor Position -->
+        <section class="card">
+          <h2 class="card-title">Cursor Position</h2>
+          <div class="position-options">
+            <label class="radio-option">
+              <input type="radio" name="position" value="current" checked />
+              <span class="radio-custom"></span>
+              <span>Current cursor position</span>
+            </label>
+            <label class="radio-option">
+              <input type="radio" name="position" value="fixed" />
+              <span class="radio-custom"></span>
+              <span>Fixed position</span>
+              <div class="coord-inputs">
+                <label class="coord-label">X <input type="number" id="pos-x" min="0" value="0" class="inline-input" /></label>
+                <label class="coord-label">Y <input type="number" id="pos-y" min="0" value="0" class="inline-input" /></label>
+                <button id="pick-position" class="pick-btn" title="Pick position from screen">
+                  <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                    <circle cx="8" cy="8" r="3" stroke="currentColor" stroke-width="1.5"/>
+                    <line x1="8" y1="1" x2="8" y2="4" stroke="currentColor" stroke-width="1.5"/>
+                    <line x1="8" y1="12" x2="8" y2="15" stroke="currentColor" stroke-width="1.5"/>
+                    <line x1="1" y1="8" x2="4" y2="8" stroke="currentColor" stroke-width="1.5"/>
+                    <line x1="12" y1="8" x2="15" y2="8" stroke="currentColor" stroke-width="1.5"/>
+                  </svg>
+                </button>
+              </div>
+            </label>
+          </div>
+        </section>
+
+        <!-- Status & Controls -->
+        <div class="controls">
+          <div class="status-bar">
+            <span class="status-dot" id="status-dot"></span>
+            <span id="status-text">Stopped</span>
+            <span class="click-count" id="click-count">0 clicks</span>
+          </div>
+          <div class="control-buttons">
+            <button id="start-btn" class="btn btn-start">
+              <svg width="18" height="18" viewBox="0 0 18 18" fill="currentColor"><polygon points="4,2 16,9 4,16"/></svg>
+              Start
+            </button>
+            <button id="stop-btn" class="btn btn-stop" disabled>
+              <svg width="18" height="18" viewBox="0 0 18 18" fill="currentColor"><rect x="3" y="3" width="12" height="12" rx="2"/></svg>
+              Stop
+            </button>
+          </div>
+          <div class="hotkey-hint">
+            Hotkey: <kbd id="hotkey-display">F6</kbd>
+            <button id="change-hotkey" class="link-btn">Change</button>
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>
