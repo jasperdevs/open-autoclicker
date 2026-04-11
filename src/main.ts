@@ -162,25 +162,34 @@ $("set-hotkey-btn").addEventListener("click", () => {
 // ── Check for updates ──
 $("check-update-btn").addEventListener("click", async () => {
   const btn = $("check-update-btn") as HTMLButtonElement;
+  const status = $("update-status");
   btn.textContent = "Checking...";
+  btn.disabled = true;
+  status.textContent = "Checking for updates...";
   try {
     const { check } = await import("@tauri-apps/plugin-updater");
     const update = await check();
     if (update) {
-      btn.textContent = `Update to ${update.version}`;
+      status.textContent = `Version ${update.version} available`;
+      btn.textContent = `Install ${update.version}`;
+      btn.disabled = false;
       btn.addEventListener("click", async () => {
         btn.textContent = "Downloading...";
+        btn.disabled = true;
+        status.textContent = "Downloading update...";
         await update.downloadAndInstall();
         const { relaunch } = await import("@tauri-apps/plugin-process");
         await relaunch();
       }, { once: true });
     } else {
-      btn.textContent = "Up to date";
-      setTimeout(() => { btn.textContent = "Check now"; }, 2000);
+      status.textContent = "You're on the latest version";
+      btn.textContent = "Check for updates";
+      btn.disabled = false;
     }
   } catch {
-    btn.textContent = "Check failed";
-    setTimeout(() => { btn.textContent = "Check now"; }, 2000);
+    status.textContent = "Could not check for updates";
+    btn.textContent = "Try again";
+    btn.disabled = false;
   }
 });
 
