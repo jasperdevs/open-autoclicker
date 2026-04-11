@@ -59,54 +59,13 @@ jobs:
           tagName: ${{ github.ref_name }}
           releaseName: 'Open Autoclicker ${{ github.ref_name }}'
           releaseBody: |
-            See the assets below to download and install.
+            ### Downloads
 
-            **Windows:**
-            - `.msi` - Standard installer
-            - `.exe` (setup) - NSIS installer
-            - `.exe` (portable) - Portable version, no install needed
-
-            **macOS:**
-            - `.dmg` - Disk image installer
-            - `.app.tar.gz` - App bundle
+            | Platform | File |
+            |----------|------|
+            | Windows | `.exe` (setup) or `.msi` (installer) |
+            | macOS (Apple Silicon) | `.dmg` (aarch64) |
+            | macOS (Intel) | `.dmg` (x64) |
           releaseDraft: false
           prerelease: false
           args: --target ${{ matrix.target }}
-
-  # Build portable Windows exe
-  portable:
-    runs-on: windows-latest
-    needs: build
-
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: 22
-
-      - name: Install Rust stable
-        uses: dtolnay/rust-toolchain@stable
-
-      - name: Rust cache
-        uses: swatinem/rust-cache@v2
-        with:
-          workspaces: src-tauri
-
-      - name: Install npm dependencies
-        run: npm ci
-
-      - name: Build frontend
-        run: npm run build
-
-      - name: Build portable exe
-        run: cargo build --release --manifest-path src-tauri/Cargo.toml
-
-      - name: Upload portable exe
-        uses: softprops/action-gh-release@v2
-        with:
-          files: src-tauri/target/release/open-autoclicker.exe
-          tag_name: ${{ github.ref_name }}
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
