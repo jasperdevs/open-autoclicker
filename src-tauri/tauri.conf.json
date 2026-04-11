@@ -51,6 +51,10 @@
         "installMode": "both",
         "displayLanguageSelector": false
       }
+    },
+    "macOS": {
+      "signingIdentity": "-",
+      "minimumSystemVersion": "10.15"
     }
   }
 }
