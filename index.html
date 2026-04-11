@@ -29,145 +29,147 @@
 
       <!-- Page: Home -->
       <div class="page active" id="page-home">
-        <!-- Interval -->
-        <div class="section-title">Click interval</div>
-        <div class="card">
-          <div class="interval-grid">
-            <label class="interval-cell">
-              <input type="number" id="hours" min="0" max="99" value="0" aria-label="Hours" />
-              <span class="interval-unit">Hours</span>
-            </label>
-            <label class="interval-cell">
-              <input type="number" id="minutes" min="0" max="59" value="0" aria-label="Minutes" />
-              <span class="interval-unit">Min</span>
-            </label>
-            <label class="interval-cell">
-              <input type="number" id="seconds" min="0" max="59" value="0" aria-label="Seconds" />
-              <span class="interval-unit">Sec</span>
-            </label>
-            <label class="interval-cell">
-              <input type="number" id="milliseconds" min="0" max="999" value="100" aria-label="Milliseconds" />
-              <span class="interval-unit">Ms</span>
-            </label>
+        <div class="page-scroll">
+          <!-- Status + Controls -->
+          <div class="control-bar">
+            <div class="status-pill">
+              <span class="status-dot" id="status-dot"></span>
+              <span id="status-text">Stopped</span>
+            </div>
+            <span class="click-counter" id="click-count">0 clicks</span>
+            <div class="control-buttons">
+              <button class="btn primary" id="start-btn">Start</button>
+              <button class="btn" id="stop-btn" disabled>Stop</button>
+            </div>
           </div>
-        </div>
 
-        <!-- Two column: Options + Controls -->
-        <div class="two-col">
-          <div class="col">
-            <div class="section-title">Options</div>
-            <div class="card">
-              <div class="row">
-                <span class="row-label">Mouse button</span>
-                <select id="mouse-button" aria-label="Mouse button">
-                  <option value="left" selected>Left</option>
-                  <option value="middle">Middle</option>
-                  <option value="right">Right</option>
-                </select>
-              </div>
-              <div class="row">
-                <span class="row-label">Click type</span>
-                <select id="click-type" aria-label="Click type">
-                  <option value="single" selected>Single</option>
-                  <option value="double">Double</option>
-                </select>
-              </div>
-              <div class="row">
-                <span class="row-label">Repeat</span>
-                <select id="repeat-mode" aria-label="Repeat mode">
-                  <option value="infinite" selected>Until stopped</option>
-                  <option value="count">Fixed count</option>
-                </select>
-              </div>
-              <div class="row indent" id="count-row" hidden>
-                <span class="row-label secondary">Times</span>
-                <input type="number" id="repeat-count" min="1" value="10" class="num-input" aria-label="Repeat count" />
-              </div>
-              <div class="row">
-                <span class="row-label">Cursor</span>
-                <select id="position-mode" aria-label="Cursor position">
-                  <option value="current" selected>Current position</option>
-                  <option value="fixed">Fixed position</option>
-                </select>
-              </div>
-              <div class="row indent" id="position-row" hidden>
-                <span class="row-label secondary">Position</span>
-                <div class="coords">
-                  <span class="coord-lbl">X</span>
-                  <input type="number" id="pos-x" min="0" value="0" class="coord-input" aria-label="X" />
-                  <span class="coord-lbl">Y</span>
-                  <input type="number" id="pos-y" min="0" value="0" class="coord-input" aria-label="Y" />
-                  <button id="pick-position" class="icon-btn" title="Pick from screen" aria-label="Pick position">
-                    <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
-                      <circle cx="7" cy="7" r="2.5" stroke="currentColor" stroke-width="1.2"/>
-                      <line x1="7" y1="1" x2="7" y2="3.5" stroke="currentColor" stroke-width="1.2"/>
-                      <line x1="7" y1="10.5" x2="7" y2="13" stroke="currentColor" stroke-width="1.2"/>
-                      <line x1="1" y1="7" x2="3.5" y2="7" stroke="currentColor" stroke-width="1.2"/>
-                      <line x1="10.5" y1="7" x2="13" y2="7" stroke="currentColor" stroke-width="1.2"/>
-                    </svg>
-                  </button>
-                </div>
+          <!-- Interval -->
+          <div class="section-title">Click interval</div>
+          <div class="card">
+            <div class="interval-grid">
+              <label class="interval-cell">
+                <input type="number" id="hours" min="0" max="99" value="0" aria-label="Hours" />
+                <span class="interval-unit">hours</span>
+              </label>
+              <label class="interval-cell">
+                <input type="number" id="minutes" min="0" max="59" value="0" aria-label="Minutes" />
+                <span class="interval-unit">min</span>
+              </label>
+              <label class="interval-cell">
+                <input type="number" id="seconds" min="0" max="59" value="0" aria-label="Seconds" />
+                <span class="interval-unit">sec</span>
+              </label>
+              <label class="interval-cell">
+                <input type="number" id="milliseconds" min="0" max="999" value="100" aria-label="Milliseconds" />
+                <span class="interval-unit">ms</span>
+              </label>
+            </div>
+          </div>
+
+          <!-- Options -->
+          <div class="section-title">Options</div>
+          <div class="card">
+            <div class="row">
+              <span class="row-label">Mouse button</span>
+              <select id="mouse-button" aria-label="Mouse button">
+                <option value="left" selected>Left</option>
+                <option value="middle">Middle</option>
+                <option value="right">Right</option>
+              </select>
+            </div>
+            <div class="row">
+              <span class="row-label">Click type</span>
+              <select id="click-type" aria-label="Click type">
+                <option value="single" selected>Single</option>
+                <option value="double">Double</option>
+              </select>
+            </div>
+            <div class="row">
+              <span class="row-label">Repeat</span>
+              <select id="repeat-mode" aria-label="Repeat mode">
+                <option value="infinite" selected>Until stopped</option>
+                <option value="count">Fixed count</option>
+              </select>
+            </div>
+            <div class="row indent" id="count-row" hidden>
+              <span class="row-label secondary">Times</span>
+              <input type="number" id="repeat-count" min="1" value="10" class="num-input" aria-label="Repeat count" />
+            </div>
+            <div class="row">
+              <span class="row-label">Cursor</span>
+              <select id="position-mode" aria-label="Cursor position">
+                <option value="current" selected>Current position</option>
+                <option value="fixed">Fixed position</option>
+              </select>
+            </div>
+            <div class="row indent" id="position-row" hidden>
+              <span class="row-label secondary">Position</span>
+              <div class="coords">
+                <span class="coord-lbl">X</span>
+                <input type="number" id="pos-x" min="0" value="0" class="coord-input" aria-label="X" />
+                <span class="coord-lbl">Y</span>
+                <input type="number" id="pos-y" min="0" value="0" class="coord-input" aria-label="Y" />
+                <button id="pick-position" class="icon-btn" title="Pick from screen" aria-label="Pick position">
+                  <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+                    <circle cx="7" cy="7" r="2.5" stroke="currentColor" stroke-width="1.2"/>
+                    <line x1="7" y1="1" x2="7" y2="3.5" stroke="currentColor" stroke-width="1.2"/>
+                    <line x1="7" y1="10.5" x2="7" y2="13" stroke="currentColor" stroke-width="1.2"/>
+                    <line x1="1" y1="7" x2="3.5" y2="7" stroke="currentColor" stroke-width="1.2"/>
+                    <line x1="10.5" y1="7" x2="13" y2="7" stroke="currentColor" stroke-width="1.2"/>
+                  </svg>
+                </button>
               </div>
             </div>
           </div>
 
-          <div class="col">
-            <div class="section-title">Control</div>
-            <div class="card control-card">
-              <div class="status-line">
-                <span class="status-dot" id="status-dot"></span>
-                <span id="status-text">Stopped</span>
-                <span class="counter" id="click-count">0 clicks</span>
-              </div>
-              <button class="btn primary full" id="start-btn">Start</button>
-              <button class="btn full" id="stop-btn" disabled>Stop</button>
-              <div class="hotkey-row">
-                <span class="hotkey-label">Hotkey</span>
-                <kbd id="hotkey-display">F6</kbd>
-              </div>
-            </div>
+          <!-- Hotkey -->
+          <div class="hotkey-bar">
+            <span class="hotkey-label">Toggle hotkey</span>
+            <kbd id="hotkey-display">F6</kbd>
           </div>
         </div>
       </div>
 
       <!-- Page: Settings -->
       <div class="page" id="page-settings">
-        <div class="section-title">General</div>
-        <div class="card">
-          <div class="row">
-            <div class="row-info">
-              <span class="row-label">Hotkey</span>
-              <span class="row-desc">Global shortcut to start/stop</span>
+        <div class="page-scroll">
+          <div class="section-title">General</div>
+          <div class="card">
+            <div class="row">
+              <div class="row-info">
+                <span class="row-label">Hotkey</span>
+                <span class="row-desc">Global shortcut to start / stop</span>
+              </div>
+              <button class="hotkey-picker" id="set-hotkey-btn">
+                <kbd id="settings-hotkey-display">F6</kbd>
+                <span class="hotkey-picker-hint">Click to change</span>
+              </button>
             </div>
-            <button class="hotkey-picker" id="set-hotkey-btn">
-              <kbd id="settings-hotkey-display">F6</kbd>
-              <span class="hotkey-picker-hint">Click to change</span>
-            </button>
-          </div>
-          <div class="row">
-            <div class="row-info">
-              <span class="row-label">Start minimized</span>
-              <span class="row-desc">Launch to system tray</span>
+            <div class="row">
+              <div class="row-info">
+                <span class="row-label">Start minimized</span>
+                <span class="row-desc">Launch to system tray</span>
+              </div>
+              <label class="toggle" aria-label="Start minimized">
+                <input type="checkbox" id="start-minimized" />
+                <span class="toggle-track"></span>
+              </label>
             </div>
-            <label class="toggle" aria-label="Start minimized">
-              <input type="checkbox" id="start-minimized" />
-              <span class="toggle-track"></span>
-            </label>
           </div>
-        </div>
 
-        <div class="section-title">About</div>
-        <div class="card">
-          <div class="row">
-            <span class="row-label">Version</span>
-            <span class="row-value">0.1.0</span>
-          </div>
-          <div class="row">
-            <div class="row-info">
-              <span class="row-label">Updates</span>
-              <span class="row-desc" id="update-status">Auto-update from GitHub Releases</span>
+          <div class="section-title">About</div>
+          <div class="card">
+            <div class="row">
+              <span class="row-label">Version</span>
+              <span class="row-value">0.1.0</span>
             </div>
-            <button class="btn compact" id="check-update-btn">Check for updates</button>
+            <div class="row">
+              <div class="row-info">
+                <span class="row-label">Updates</span>
+                <span class="row-desc" id="update-status">Auto-update from GitHub Releases</span>
+              </div>
+              <button class="btn compact" id="check-update-btn">Check for updates</button>
+            </div>
           </div>
         </div>
       </div>
