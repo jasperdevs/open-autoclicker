@@ -1,6 +1,6 @@
 {
   "name": "open-autoclicker",
-  "version": "0.3.2",
+  "version": "0.3.3",
   "description": "A modern Windows autoclicker built with Tauri",
   "private": true,
   "type": "module",
