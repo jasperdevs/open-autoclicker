@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="assets/OpenClickerLogo.svg" alt="Open Autoclicker logo" width="128" />
+  <img src="Assets/OpenClickerLogo.svg" alt="Open Autoclicker logo" width="128" />
 </p>
 
 <h1 align="center">Open Autoclicker</h1>
@@ -45,7 +45,7 @@ Grab the latest release from the [**Releases page**](https://github.com/jasperde
 Set precise intervals down to the millisecond with separate fields for hours, minutes, seconds, and ms.
 </td>
 <td width="60%">
-<img src="assets/readme/click-interval.png" alt="Click interval configuration" width="100%" />
+<img src="Assets/readme/click-interval.png" alt="Click interval configuration" width="100%" />
 </td>
 </tr>
 <tr>
@@ -54,7 +54,7 @@ Set precise intervals down to the millisecond with separate fields for hours, mi
 Choose left, middle, or right button with single or double click mode. Set a fixed repeat count or click until stopped.
 </td>
 <td width="60%">
-<img src="assets/readme/mouse-options.png" alt="Mouse button and click type options" width="100%" />
+<img src="Assets/readme/mouse-options.png" alt="Mouse button and click type options" width="100%" />
 </td>
 </tr>
 <tr>
@@ -63,7 +63,7 @@ Choose left, middle, or right button with single or double click mode. Set a fix
 Click at the current cursor position or lock to fixed X/Y coordinates with a built-in screen picker.
 </td>
 <td width="60%">
-<img src="assets/readme/cursor-position.png" alt="Cursor position configuration" width="100%" />
+<img src="Assets/readme/cursor-position.png" alt="Cursor position configuration" width="100%" />
 </td>
 </tr>
 <tr>
@@ -72,7 +72,7 @@ Click at the current cursor position or lock to fixed X/Y coordinates with a bui
 Start and stop clicking with a customizable global hotkey that works even when the app is in the background. Default: F6.
 </td>
 <td width="60%">
-<img src="assets/readme/global-hotkey.png" alt="Global hotkey configuration" width="100%" />
+<img src="Assets/readme/global-hotkey.png" alt="Global hotkey configuration" width="100%" />
 </td>
 </tr>
 <tr>
@@ -81,7 +81,7 @@ Start and stop clicking with a customizable global hotkey that works even when t
 Runs quietly in the background with full tray menu controls. Double-click the tray icon to restore the window.
 </td>
 <td width="60%">
-<img src="assets/readme/system-tray.png" alt="System tray integration" width="100%" />
+<img src="Assets/readme/system-tray.png" alt="System tray integration" width="100%" />
 </td>
 </tr>
 <tr>
@@ -90,7 +90,7 @@ Runs quietly in the background with full tray menu controls. Double-click the tr
 Follows your system theme automatically with a native look on both Windows and macOS.
 </td>
 <td width="60%">
-<img src="assets/readme/dark-light-mode.png" alt="Dark and light mode support" width="100%" />
+<img src="Assets/readme/dark-light-mode.png" alt="Dark and light mode support" width="100%" />
 </td>
 </tr>
 <tr>
@@ -99,7 +99,7 @@ Follows your system theme automatically with a native look on both Windows and m
 Checks for new versions directly from GitHub Releases so you're always on the latest build.
 </td>
 <td width="60%">
-<img src="assets/readme/auto-updates.png" alt="Auto-update from GitHub Releases" width="100%" />
+<img src="Assets/readme/auto-updates.png" alt="Auto-update from GitHub Releases" width="100%" />
 </td>
 </tr>
 </table>
