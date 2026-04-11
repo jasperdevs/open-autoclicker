@@ -62,20 +62,6 @@ jobs:
           "WINDOWS_SIGN_DIGEST_ALGORITHM=sha256" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
           "WINDOWS_SIGN_TIMESTAMP_URL=$env:WINDOWS_TIMESTAMP_URL" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
 
-      - name: Prepare updater public key
-        shell: pwsh
-        env:
-          TAURI_UPDATER_PUBLIC_KEY_B64: ${{ vars.TAURI_UPDATER_PUBLIC_KEY }}
-        run: |
-          if ([string]::IsNullOrWhiteSpace($env:TAURI_UPDATER_PUBLIC_KEY_B64)) {
-            Write-Error "TAURI_UPDATER_PUBLIC_KEY is not configured."
-            exit 1
-          }
-          $decoded = [System.Text.Encoding]::UTF8.GetString([Convert]::FromBase64String($env:TAURI_UPDATER_PUBLIC_KEY_B64))
-          "TAURI_UPDATER_PUBLIC_KEY<<EOF" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
-          $decoded | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
-          "EOF" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
-
       - name: Build Tauri app
         uses: tauri-apps/tauri-action@v0
         env:

@@ -1,6 +1,6 @@
 [package]
 name = "open-autoclicker"
-version = "0.3.1"
+version = "0.3.2"
 description = "A modern Windows autoclicker"
 authors = ["jasperdevs"]
 license = "MIT"
