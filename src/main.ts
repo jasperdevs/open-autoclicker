@@ -159,6 +159,31 @@ $("set-hotkey-btn").addEventListener("click", () => {
   document.addEventListener("keydown", handler);
 });
 
+// ── Check for updates ──
+$("check-update-btn").addEventListener("click", async () => {
+  const btn = $("check-update-btn") as HTMLButtonElement;
+  btn.textContent = "Checking...";
+  try {
+    const { check } = await import("@tauri-apps/plugin-updater");
+    const update = await check();
+    if (update) {
+      btn.textContent = `Update to ${update.version}`;
+      btn.addEventListener("click", async () => {
+        btn.textContent = "Downloading...";
+        await update.downloadAndInstall();
+        const { relaunch } = await import("@tauri-apps/plugin-process");
+        await relaunch();
+      }, { once: true });
+    } else {
+      btn.textContent = "Up to date";
+      setTimeout(() => { btn.textContent = "Check now"; }, 2000);
+    }
+  } catch {
+    btn.textContent = "Check failed";
+    setTimeout(() => { btn.textContent = "Check now"; }, 2000);
+  }
+});
+
 // ── Prevent Enter on number inputs ──
 document.querySelectorAll('input[type="number"]').forEach((el) => {
   el.addEventListener("keydown", (e) => {
