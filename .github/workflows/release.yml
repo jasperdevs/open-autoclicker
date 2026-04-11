@@ -11,6 +11,15 @@ permissions:
 
 jobs:
   build:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - target: x86_64-pc-windows-msvc
+            arch_label: x64
+          - target: i686-pc-windows-msvc
+            arch_label: x86
+
     runs-on: windows-latest
 
     steps:
@@ -24,7 +33,7 @@ jobs:
       - name: Install Rust stable
         uses: dtolnay/rust-toolchain@stable
         with:
-          targets: x86_64-pc-windows-msvc
+          targets: ${{ matrix.target }}
 
       - name: Rust cache
         uses: swatinem/rust-cache@v2
@@ -57,6 +66,9 @@ jobs:
         uses: tauri-apps/tauri-action@v0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TAURI_UPDATER_PUBLIC_KEY: ${{ vars.TAURI_UPDATER_PUBLIC_KEY }}
+          TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}
+          TAURI_SIGNING_PRIVATE_KEY_PASSWORD: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY_PASSWORD }}
           WINDOWS_CERTIFICATE_THUMBPRINT: ${{ env.WINDOWS_CERTIFICATE_THUMBPRINT }}
           WINDOWS_SIGN_DIGEST_ALGORITHM: ${{ env.WINDOWS_SIGN_DIGEST_ALGORITHM }}
           WINDOWS_SIGN_TIMESTAMP_URL: ${{ env.WINDOWS_SIGN_TIMESTAMP_URL }}
@@ -68,7 +80,8 @@ jobs:
 
             | Platform | File |
             |----------|------|
-            | Windows | `.exe` (setup) or `.msi` (installer) |
+            | Windows x64 | `.exe` (setup) or `.msi` (installer) |
+            | Windows x86 | `.exe` (setup) or `.msi` (installer) |
           releaseDraft: false
           prerelease: false
-          args: --target x86_64-pc-windows-msvc
+          args: --target ${{ matrix.target }}

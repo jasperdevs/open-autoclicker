@@ -47,16 +47,6 @@
               <span id="status-text">Stopped</span>
             </div>
             <span class="click-counter" id="click-count">0 clicks</span>
-            <div class="control-buttons">
-              <button class="btn primary" id="start-btn">
-                <img src="/icons/play.svg" class="btn-icon" alt="" />
-                Start
-              </button>
-              <button class="btn" id="stop-btn" disabled>
-                <img src="/icons/stop.svg" class="btn-icon" alt="" />
-                Stop
-              </button>
-            </div>
           </div>
 
           <!-- Interval -->
@@ -164,11 +154,16 @@
             </div>
           </div>
 
-          <!-- Hotkey -->
-          <div class="hotkey-bar">
-            <span class="hotkey-label">Toggle hotkey</span>
-            <kbd id="hotkey-display">F6</kbd>
-          </div>
+        </div>
+        <div class="home-action-bar">
+          <button class="btn primary home-action-btn" id="start-btn">
+            <img src="/icons/play.svg" class="btn-icon" alt="" />
+            <span id="start-btn-label">Start (F6)</span>
+          </button>
+          <button class="btn home-action-btn" id="stop-btn" disabled>
+            <img src="/icons/stop.svg" class="btn-icon" alt="" />
+            <span>Stop</span>
+          </button>
         </div>
       </div>
 

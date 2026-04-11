@@ -32,7 +32,8 @@ Download directly from the [releases page](https://github.com/jasperdevs/open-au
 
 | Platform              | Download                                       |
 | --------------------- | ---------------------------------------------- |
-| Windows               | `.exe` setup installer                         |
+| Windows x64           | `.exe` setup installer / `.msi` installer      |
+| Windows x86           | `.exe` setup installer / `.msi` installer      |
 
 ### Features
 
@@ -114,7 +115,7 @@ Fully open source, no telemetry, no network calls besides update checks. Builds 
 
 ### Release setup
 
-- Signed updater releases are currently disabled. If you want in-app auto-updates later, add `TAURI_UPDATER_PUBLIC_KEY`, `TAURI_SIGNING_PRIVATE_KEY`, and `TAURI_SIGNING_PRIVATE_KEY_PASSWORD`, then re-enable updater artifact generation.
+- Release builds produce signed updater artifacts for the Windows updater flow.
 - Add Windows Authenticode signing secrets (`WINDOWS_CERTIFICATE`, `WINDOWS_CERTIFICATE_PASSWORD`) and optionally `WINDOWS_TIMESTAMP_URL` so release builds can sign `.msi` / `.exe` installers and reduce SmartScreen warnings.
 - The repository now runs CI on pull requests and `main` to catch frontend or Rust regressions before tagging a release.
 

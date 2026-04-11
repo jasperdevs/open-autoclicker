@@ -68,11 +68,11 @@ let startAttemptId = 0;
 const $ = (id: string) => document.getElementById(id)!;
 
 const startBtn = $("start-btn") as HTMLButtonElement;
+const startBtnLabel = $("start-btn-label");
 const stopBtn = $("stop-btn") as HTMLButtonElement;
 const statusDot = $("status-dot");
 const statusText = $("status-text");
 const clickCountEl = $("click-count");
-const hotkeyDisplay = $("hotkey-display");
 const settingsHotkeyDisplay = $("settings-hotkey-display");
 const settingsMacroHotkeyDisplay = $("settings-macro-hotkey-display");
 const settingsEmergencyDisplay = $("settings-emergency-display");
@@ -157,7 +157,7 @@ function applySettings(settings: PersistedSettings) {
   currentMacroHotkey = settings.macroHotkey;
   currentEmergencyHotkey = settings.emergencyHotkey;
 
-  hotkeyDisplay.textContent = currentHotkey;
+  startBtnLabel.textContent = `Start (${currentHotkey})`;
   settingsHotkeyDisplay.textContent = currentHotkey;
   settingsMacroHotkeyDisplay.textContent = formatHotkey(currentMacroHotkey);
   settingsEmergencyDisplay.textContent = formatHotkey(currentEmergencyHotkey);
@@ -589,7 +589,7 @@ async function syncHotkeys(settings: PersistedSettings) {
     }
   }
 
-  hotkeyDisplay.textContent = currentHotkey;
+  startBtnLabel.textContent = `Start (${currentHotkey})`;
   settingsHotkeyDisplay.textContent = currentHotkey;
   settingsMacroHotkeyDisplay.textContent = formatHotkey(currentMacroHotkey);
   settingsEmergencyDisplay.textContent = formatHotkey(currentEmergencyHotkey);
@@ -721,7 +721,7 @@ setupHotkeyPicker(
   async (key) => {
     await invoke("set_hotkey", { key });
     currentHotkey = key;
-    hotkeyDisplay.textContent = key;
+    startBtnLabel.textContent = `Start (${key})`;
     persistCurrentSettings();
   },
   () => currentHotkey || appInfo.default_toggle_hotkey,
