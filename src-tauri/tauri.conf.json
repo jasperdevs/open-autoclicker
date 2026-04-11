@@ -1,7 +1,7 @@
 {
   "$schema": "../node_modules/@tauri-apps/cli/config.schema.json",
   "productName": "Open Autoclicker",
-  "version": "0.2.4",
+  "version": "0.2.5",
   "identifier": "com.jasperdevs.open-autoclicker",
   "build": {
     "frontendDist": "../dist",
