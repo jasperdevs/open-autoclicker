@@ -6,7 +6,7 @@
     <title>Open Autoclicker</title>
     <link rel="stylesheet" href="/src/styles.css" />
   </head>
-  <body>
+  <body oncontextmenu="return false">
     <div id="app">
       <!-- Titlebar -->
       <div class="titlebar" data-tauri-drag-region>
@@ -23,8 +23,18 @@
 
       <!-- Navigation -->
       <div class="nav">
-        <button class="nav-item active" data-page="home">Clicker</button>
-        <button class="nav-item" data-page="settings">Settings</button>
+        <button class="nav-item active" data-page="home">
+          <img src="/icons/mouse.svg" class="nav-icon" alt="" />
+          Clicker
+        </button>
+        <button class="nav-item" data-page="macro">
+          <img src="/icons/macro.svg" class="nav-icon" alt="" />
+          Macro
+        </button>
+        <button class="nav-item" data-page="settings">
+          <img src="/icons/gear.svg" class="nav-icon" alt="" />
+          Settings
+        </button>
       </div>
 
       <!-- Page: Home -->
@@ -38,8 +48,14 @@
             </div>
             <span class="click-counter" id="click-count">0 clicks</span>
             <div class="control-buttons">
-              <button class="btn primary" id="start-btn">Start</button>
-              <button class="btn" id="stop-btn" disabled>Stop</button>
+              <button class="btn primary" id="start-btn">
+                <img src="/icons/play.svg" class="btn-icon" alt="" />
+                Start
+              </button>
+              <button class="btn" id="stop-btn" disabled>
+                <img src="/icons/stop.svg" class="btn-icon" alt="" />
+                Stop
+              </button>
             </div>
           </div>
 
@@ -68,28 +84,37 @@
 
           <!-- Options -->
           <div class="section-title">Options</div>
-          <div class="card">
+          <div class="card no-clip">
             <div class="row">
               <span class="row-label">Mouse button</span>
-              <select id="mouse-button" aria-label="Mouse button">
-                <option value="left" selected>Left</option>
-                <option value="middle">Middle</option>
-                <option value="right">Right</option>
-              </select>
+              <div class="select" id="mouse-button" data-value="left">
+                <button class="select-trigger" type="button">Left</button>
+                <div class="select-drop">
+                  <div class="select-opt selected" data-val="left">Left</div>
+                  <div class="select-opt" data-val="middle">Middle</div>
+                  <div class="select-opt" data-val="right">Right</div>
+                </div>
+              </div>
             </div>
             <div class="row">
               <span class="row-label">Click type</span>
-              <select id="click-type" aria-label="Click type">
-                <option value="single" selected>Single</option>
-                <option value="double">Double</option>
-              </select>
+              <div class="select" id="click-type" data-value="single">
+                <button class="select-trigger" type="button">Single</button>
+                <div class="select-drop">
+                  <div class="select-opt selected" data-val="single">Single</div>
+                  <div class="select-opt" data-val="double">Double</div>
+                </div>
+              </div>
             </div>
             <div class="row">
               <span class="row-label">Repeat</span>
-              <select id="repeat-mode" aria-label="Repeat mode">
-                <option value="infinite" selected>Until stopped</option>
-                <option value="count">Fixed count</option>
-              </select>
+              <div class="select" id="repeat-mode" data-value="infinite">
+                <button class="select-trigger" type="button">Until stopped</button>
+                <div class="select-drop">
+                  <div class="select-opt selected" data-val="infinite">Until stopped</div>
+                  <div class="select-opt" data-val="count">Fixed count</div>
+                </div>
+              </div>
             </div>
             <div class="row indent" id="count-row" hidden>
               <span class="row-label secondary">Times</span>
@@ -97,10 +122,13 @@
             </div>
             <div class="row">
               <span class="row-label">Cursor</span>
-              <select id="position-mode" aria-label="Cursor position">
-                <option value="current" selected>Current position</option>
-                <option value="fixed">Fixed position</option>
-              </select>
+              <div class="select" id="position-mode" data-value="current">
+                <button class="select-trigger" type="button">Current position</button>
+                <div class="select-drop">
+                  <div class="select-opt selected" data-val="current">Current position</div>
+                  <div class="select-opt" data-val="fixed">Fixed position</div>
+                </div>
+              </div>
             </div>
             <div class="row indent" id="position-row" hidden>
               <span class="row-label secondary">Position</span>
@@ -120,6 +148,20 @@
                 </button>
               </div>
             </div>
+            <div class="row">
+              <span class="row-label">Start delay</span>
+              <div class="select" id="start-delay" data-value="0">
+                <button class="select-trigger" type="button">None</button>
+                <div class="select-drop">
+                  <div class="select-opt selected" data-val="0">None</div>
+                  <div class="select-opt" data-val="1">1 second</div>
+                  <div class="select-opt" data-val="2">2 seconds</div>
+                  <div class="select-opt" data-val="3">3 seconds</div>
+                  <div class="select-opt" data-val="5">5 seconds</div>
+                  <div class="select-opt" data-val="10">10 seconds</div>
+                </div>
+              </div>
+            </div>
           </div>
 
           <!-- Hotkey -->
@@ -130,21 +172,120 @@
         </div>
       </div>
 
+      <!-- Page: Macro -->
+      <div class="page" id="page-macro">
+        <div class="page-scroll">
+          <!-- Macro Controls -->
+          <div class="control-bar">
+            <div class="status-pill">
+              <span class="status-dot" id="macro-status-dot"></span>
+              <span id="macro-status-text">Idle</span>
+            </div>
+            <span class="click-counter" id="macro-action-count">0 actions</span>
+            <div class="control-buttons">
+              <button class="btn" id="macro-record-btn" title="Record">
+                <img src="/icons/record.svg" class="btn-icon" alt="" />
+                Record
+              </button>
+              <button class="btn primary" id="macro-play-btn" title="Play" disabled>
+                <img src="/icons/play.svg" class="btn-icon" alt="" />
+                Play
+              </button>
+              <button class="btn" id="macro-stop-btn" title="Stop" disabled>
+                <img src="/icons/stop.svg" class="btn-icon" alt="" />
+                Stop
+              </button>
+            </div>
+          </div>
+
+          <!-- Macro Options -->
+          <div class="section-title">Playback</div>
+          <div class="card no-clip">
+            <div class="row">
+              <span class="row-label">Speed</span>
+              <div class="select" id="macro-speed" data-value="1">
+                <button class="select-trigger" type="button">1x</button>
+                <div class="select-drop">
+                  <div class="select-opt" data-val="0.25">0.25x</div>
+                  <div class="select-opt" data-val="0.5">0.5x</div>
+                  <div class="select-opt selected" data-val="1">1x</div>
+                  <div class="select-opt" data-val="2">2x</div>
+                  <div class="select-opt" data-val="4">4x</div>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <span class="row-label">Repeat</span>
+              <div class="select" id="macro-repeat" data-value="once">
+                <button class="select-trigger" type="button">Once</button>
+                <div class="select-drop">
+                  <div class="select-opt selected" data-val="once">Once</div>
+                  <div class="select-opt" data-val="count">Fixed count</div>
+                  <div class="select-opt" data-val="infinite">Until stopped</div>
+                </div>
+              </div>
+            </div>
+            <div class="row indent" id="macro-count-row" hidden>
+              <span class="row-label secondary">Times</span>
+              <input type="number" id="macro-repeat-count" min="1" value="3" class="num-input" aria-label="Macro repeat count" />
+            </div>
+          </div>
+
+          <!-- Recorded Actions -->
+          <div class="section-title">
+            Recorded actions
+            <button class="btn compact section-action" id="macro-clear-btn" disabled>
+              <img src="/icons/clear.svg" class="btn-icon" alt="" />
+              Clear
+            </button>
+          </div>
+          <div class="card">
+            <div class="macro-list" id="macro-list">
+              <div class="macro-empty">No actions recorded</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
       <!-- Page: Settings -->
       <div class="page" id="page-settings">
         <div class="page-scroll">
-          <div class="section-title">General</div>
+          <div class="section-title">Hotkeys</div>
           <div class="card">
             <div class="row">
               <div class="row-info">
-                <span class="row-label">Hotkey</span>
-                <span class="row-desc">Global shortcut to start / stop</span>
+                <span class="row-label">Toggle hotkey</span>
+                <span class="row-desc">Start / stop the clicker</span>
               </div>
               <button class="hotkey-picker" id="set-hotkey-btn">
                 <kbd id="settings-hotkey-display">F6</kbd>
                 <span class="hotkey-picker-hint">Click to change</span>
               </button>
             </div>
+            <div class="row">
+              <div class="row-info">
+                <span class="row-label">Macro hotkey</span>
+                <span class="row-desc">Start / stop macro playback</span>
+              </div>
+              <button class="hotkey-picker" id="set-macro-hotkey-btn">
+                <kbd id="settings-macro-hotkey-display">Not set</kbd>
+                <span class="hotkey-picker-hint">Click to change</span>
+              </button>
+            </div>
+            <div class="row">
+              <div class="row-info">
+                <span class="row-label">Emergency stop</span>
+                <span class="row-desc">Force-quit everything</span>
+              </div>
+              <button class="hotkey-picker" id="set-emergency-btn">
+                <kbd id="settings-emergency-display">Not set</kbd>
+                <span class="hotkey-picker-hint">Click to change</span>
+              </button>
+            </div>
+          </div>
+
+          <div class="section-title">General</div>
+          <div class="card">
             <div class="row">
               <div class="row-info">
                 <span class="row-label">Start minimized</span>

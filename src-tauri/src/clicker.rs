@@ -18,7 +18,7 @@ pub struct ClickerConfig {
 }
 
 pub struct ClickerState {
-    running: Arc<AtomicBool>,
+    pub running: Arc<AtomicBool>,
 }
 
 impl ClickerState {
@@ -50,8 +50,6 @@ pub async fn start_clicking(app: AppHandle, config: ClickerConfig) -> Result<(),
     let running = state.running.clone();
     let app_handle = app.clone();
 
-    // The actual clicking runs in a background thread since enigo needs
-    // to operate on the main/OS thread level for input simulation
     std::thread::spawn(move || {
         let rt = tokio::runtime::Builder::new_current_thread()
             .enable_time()
@@ -74,12 +72,10 @@ pub async fn start_clicking(app: AppHandle, config: ClickerConfig) -> Result<(),
                     break;
                 }
 
-                // Move to fixed position if needed
                 if use_fixed {
                     let _ = enigo.move_mouse(config.fixed_x, config.fixed_y, Coordinate::Abs);
                 }
 
-                // Perform click
                 let _ = enigo.button(button, enigo::Direction::Click);
                 if is_double {
                     let _ = enigo.button(button, enigo::Direction::Click);
@@ -87,7 +83,6 @@ pub async fn start_clicking(app: AppHandle, config: ClickerConfig) -> Result<(),
 
                 count += 1;
 
-                // Emit count update every click (or batch for very fast clicking)
                 if count % 10 == 0 || config.interval_ms >= 50 {
                     let _ = app_handle.emit("click-count", count);
                 }
@@ -95,7 +90,6 @@ pub async fn start_clicking(app: AppHandle, config: ClickerConfig) -> Result<(),
                 sleep(interval).await;
             }
 
-            // Final count update
             let _ = app_handle.emit("click-count", count);
             running.store(false, Ordering::SeqCst);
             let _ = app_handle.emit("clicker-stopped", ());
@@ -131,10 +125,8 @@ pub async fn set_hotkey(app: AppHandle, key: String) -> Result<(), String> {
 
     let global_shortcut = app.global_shortcut();
 
-    // Unregister all existing shortcuts
     global_shortcut.unregister_all().map_err(|e| e.to_string())?;
 
-    // Parse and register new shortcut
     let shortcut: Shortcut = key.parse().map_err(|e| format!("{e:?}"))?;
 
     let handle = app.clone();
@@ -142,6 +134,25 @@ pub async fn set_hotkey(app: AppHandle, key: String) -> Result<(), String> {
         .on_shortcut(shortcut, move |_app, _shortcut, event| {
             if event.state == tauri_plugin_global_shortcut::ShortcutState::Pressed {
                 let _ = handle.emit("toggle-clicker", ());
+            }
+        })
+        .map_err(|e| e.to_string())?;
+
+    Ok(())
+}
+
+#[tauri::command]
+pub async fn set_emergency_hotkey(app: AppHandle, key: String) -> Result<(), String> {
+    use tauri_plugin_global_shortcut::{GlobalShortcutExt, Shortcut};
+
+    let shortcut: Shortcut = key.parse().map_err(|e| format!("{e:?}"))?;
+
+    let handle = app.clone();
+    app.global_shortcut()
+        .on_shortcut(shortcut, move |_app, _shortcut, event| {
+            if event.state == tauri_plugin_global_shortcut::ShortcutState::Pressed {
+                let _ = handle.emit("emergency-stop", ());
+                handle.exit(0);
             }
         })
         .map_err(|e| e.to_string())?;
